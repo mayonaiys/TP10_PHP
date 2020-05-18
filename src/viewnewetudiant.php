@@ -11,29 +11,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" href="viewnewetudiant.php">Ajouter un étudiant</a>
-            <a class="nav-item nav-link" href="index.php">Déconnexion</a>
-        </div>
-    </div>
-</nav>
-
+<br>
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <br>
+            <h2>S'inscrire</h2>
+            <hr>
+            <form method="post">
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Nom</label>
+                    <input type="text" class="form-control" name="name" placeholder="Entrez le nom de l'élève">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Prénom</label>
+                    <input type="text" class="form-control" name="firstname" placeholder="Entrez le prénom de l'élève">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Moyenne</label>
+                    <input type="text" class="form-control" name="moyenne" placeholder="Entrez la moyenne de l'élève">
+                </div>
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </form>
             <?php
             include 'controller.php';
-            displayList();
+            addEtudiant();
             ?>
         </div>
     </div>
 </div>
 </body>
 </html>
-
+<?php
