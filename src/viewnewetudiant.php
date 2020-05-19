@@ -15,7 +15,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h2>S'inscrire</h2>
+            <h2>Ajouter un étudiant</h2>
             <hr>
             <form method="post">
                 <div class="form-group">

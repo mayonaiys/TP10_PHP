@@ -1,5 +1,7 @@
 <?php
 
+
+
 function connexbdd($base,$user,$password){
     try {
         $bdd = new PDO($base,$user,$password);
@@ -24,8 +26,6 @@ function addUser(){
         } else {
             echo "Les mots de passe ne correspondent pas !";
         }
-    } else {
-        echo "Une valeur est vide ou incorrecte";
     }
 }
 
@@ -38,22 +38,27 @@ function authentification(){
         while(($infos = $user->fetch())!=0 && !$isconnected){
             if(password_verify($_POST['password'],$infos['password'])){
                 $isconnected = true;
+                session_start();
+                $_SESSION['nom']=$infos['nom'];
+                $_SESSION['prenom']=$infos['prenom'];
+                $_SESSION['id']=$infos['id'];
             }
         }
 
         if($isconnected){
             header("Location: http://localhost/PHP/TP10/src/viewadmin.php");
         } else  {
-            echo "Email ou mot de passe incorrect !";
+            echo '<br><section id="errors" class="container alert alert-danger">Email ou mot de passe incorrect.</section>';
         }
     }
 }
 
 function displayList(){
+    session_start();
     $bdd = connexbdd('pgsql:dbname=etudiants;host=localhost;port=5432', 'postgres', 'passwordbdd');
 
-    $query = "SELECT * FROM etudiant";
-    $result = $bdd->query($query);
+    $recup = $bdd->prepare('SELECT * FROM etudiant WHERE user_id=?');
+    $recup->execute(array($_SESSION['id']));
 
     echo '<table class="table">';
     echo '<thead>
@@ -65,12 +70,14 @@ function displayList(){
                 </tr>
             </thead>';
 
-    foreach($result as $data){
+    while(($data = $recup->fetch())!=0){
         echo '<tr>',
             '<td>'.$data['id'].'</td>',
             '<td>'.$data['nom'].'</td>',
             '<td>'.$data['prenom'].'</td>',
             '<td>'.$data['note'].'</td>',
+            '<td><form method="post" action="vieweditetudiant.php"><button type="submit" class="btn btn-warning">Editer</button></form></td>',
+            '<td><form method="post" action="controller.php?func=deleteEtudiant"><button type="submit" class="btn btn-danger">Supprimer</button></form></td>',
         '</tr>';
     }
 
@@ -78,15 +85,20 @@ function displayList(){
 }
 
 function addEtudiant(){
+    session_start();
     $bdd = connexbdd('pgsql:dbname=etudiants;host=localhost;port=5432', 'postgres', 'passwordbdd');
     if(isset($_POST['name']) && isset($_POST['firstname']) &&  isset($_POST['moyenne'])){
         $query = "SELECT COUNT(*) as nb FROM etudiant";
         $result = $bdd->query($query);
         $id = $result->fetch()['nb'] + 1;
         $add = $bdd->prepare('INSERT INTO etudiant(id,user_id,nom,prenom,note) VALUES(?, ?, ?, ?, ?)');
-        $add->execute(array($id,0,$_POST['name'],$_POST['firstname'],(int)$_POST['moyenne']));
+        $add->execute(array($id,$_SESSION['id'],$_POST['name'],$_POST['firstname'],(int)$_POST['moyenne']));
         header("Location: http://localhost/PHP/TP10/src/viewadmin.php");
     } else {
         echo "Une valeur est vide ou incorrecte";
     }
+}
+
+function editEtudiant(){
+
 }
